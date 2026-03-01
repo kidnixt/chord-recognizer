@@ -3,13 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chord Recognizer</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-  <h1>🎸 Chord Recognizer</h1>
+  <div class="app-container">
+    <header class="app-header">
+      <h1>🎸 Chord Recognizer</h1>
+    </header>
 
-  <button id="start">Start Listening</button>
+    <main class="app-main">
+      <div class="controls">
+        <button id="start" class="btn">Start Listening</button>
+        <button id="stop" class="btn">Stop Listening</button>
+      </div>
 
-  <pre id="output">Idle...</pre>
+      <div class="visualizer">
+        <canvas id="spectrum" width="800" height="300"></canvas>
+      </div>
+
+      <div class="output">
+        <pre id="output">Idle...</pre>
+      </div>
+    </main>
+  </div>
 
   <script type="module" src="/src/main.ts"></script>
 </body>

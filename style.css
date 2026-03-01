@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap');
+
+body {
+  font-family: 'Roboto', sans-serif; /* Unificamos fuente */
+  margin: 0;
+  background-color: #191919;
+  color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.app-container {
+  text-align: center;
+  width: 92%;
+  max-width: 650px;
+  background: #252525;
+  border-radius: 12px;
+  box-shadow: 0 10px 0px #000000;
+  overflow: hidden;
+  border: 2px solid #333;
+}
+
+.app-header {
+  background: #FFD25A;
+  padding: 25px;
+  border-bottom: 4px solid #E5BD51;
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 900;
+  color: #191919;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.app-main {
+  padding: 30px;
+}
+
+/* Botones MATE con elevación sólida (Sin brillos) */
+.btn {
+  background: #FF785A;
+  color: #191919;
+  border: none;
+  padding: 14px 28px;
+  margin: 10px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.1s;
+  /* CAMBIO: Sombra sólida para efecto MATE, sin difuminado */
+  box-shadow: 0 5px 0px #C65D46; 
+}
+
+.btn:hover {
+  background: #ff8a70;
+}
+
+.btn:active {
+  box-shadow: 0 0px 0px #C65D46;
+  transform: translateY(5px);
+}
+
+/* Visualizador totalmente negro y MATE */
+.visualizer {
+  margin: 30px auto; /* Centrado automático */
+  background: #000; /* Negro absoluto */
+  padding: 10px; /* Un poco de aire */
+  border-radius: 10px;
+  border: none; /* ELIMINAMOS EL BORDE GRIS */
+  width: calc(100% - 20px); /* Ajuste de ancho */
+  display: flex;
+  justify-content: center;
+}
+
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: #000;
+  border-radius: 4px;
+}
+
+/* Contenedor de salida con fuente unificada */
+.output {
+  margin-top: 20px;
+  background: #FFF05A;
+  padding: 25px;
+  border-radius: 10px;
+  border-bottom: 5px solid #E5D851;
+}
+
+#output {
+  /* CAMBIO: Usamos la misma fuente Roboto pero con peso fuerte y tamaño legible */
+  font-family: 'Roboto', sans-serif;
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: #191919;
+  margin: 0;
+}
