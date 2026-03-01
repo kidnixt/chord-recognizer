@@ -2,9 +2,13 @@ import { createAudioContext } from "./audio/audioContext";
 import { getMicrophoneStream } from "./audio/microphone";
 import { createAnalyser } from "./audio/analyser";
 import { getSpectrum } from "./dsp/fft";
+import { detectPeaks } from "./dsp/peaks";
+import { frequencyToNote } from "./music/pitch";
 import { updateOutput } from "./ui/app";
+import { SpectrumVisualizer } from "./ui/spectrum";
 
 const button = document.getElementById("start")!;
+const canvas = document.getElementById("spectrum") as HTMLCanvasElement;
 
 button.addEventListener("click", async () => {
   const ctx = createAudioContext();
@@ -12,14 +16,30 @@ button.addEventListener("click", async () => {
   const source = ctx.createMediaStreamSource(stream);
   const analyser = createAnalyser(ctx, source);
 
+  const visualizer = new SpectrumVisualizer(canvas);
+
   updateOutput("Listening...");
 
   function loop() {
     const spectrum = getSpectrum(analyser);
 
-    // DEBUG: mostramos el pico máximo
-    const max = Math.max(...spectrum);
-    updateOutput(`Max energy: ${max.toFixed(2)} dB`);
+    // 🎨 dibujamos espectro
+    visualizer.draw(spectrum);
+
+    // 🎵 detección musical
+    const peaks = detectPeaks(
+      spectrum,
+      ctx.sampleRate,
+      analyser.fftSize
+    );
+
+    const notes = peaks.map(p => frequencyToNote(p.frequency));
+
+    const text = notes
+      .map(n => `${n.name} (${n.frequency.toFixed(1)} Hz)`)
+      .join("\n");
+
+    updateOutput(text || "No peaks");
 
     requestAnimationFrame(loop);
   }

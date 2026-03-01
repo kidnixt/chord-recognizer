@@ -3,11 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <title>Chord Recognizer</title>
+  <style>
+    canvas {
+      border: 1px solid #ccc;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>🎸 Chord Recognizer</h1>
 
   <button id="start">Start Listening</button>
+
+  <canvas id="spectrum" width="800" height="300"></canvas>
 
   <pre id="output">Idle...</pre>
 
