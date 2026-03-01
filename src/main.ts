@@ -20,6 +20,23 @@ let audioCtx: AudioContext | null = null;
 let isListening = false;
 let smoothedChroma = new Float32Array(12).fill(0);
 
+let detectionThreshold = 0.40;
+let volumeGate = 0.015;
+
+const thresholdSlider = document.getElementById("thresholdSlider") as HTMLInputElement;
+const thresholdValue = document.getElementById("thresholdValue")!;
+thresholdSlider.addEventListener("input", (e) => {
+  detectionThreshold = parseFloat((e.target as HTMLInputElement).value);
+  thresholdValue.textContent = detectionThreshold.toFixed(2);
+});
+
+const gateSlider = document.getElementById("gateSlider") as HTMLInputElement;
+const gateValue = document.getElementById("gateValue")!;
+gateSlider.addEventListener("input", (e) => {
+  volumeGate = parseFloat((e.target as HTMLInputElement).value);
+  gateValue.textContent = volumeGate.toFixed(3);
+});
+
 button.addEventListener("click", async () => {
   if (isListening) return;
 
@@ -53,9 +70,8 @@ button.addEventListener("click", async () => {
 
   // 1. GATE DE VOLUMEN PRIMERO
   const rms = Math.sqrt(timeData.reduce((sum, v) => sum + v * v, 0) / timeData.length);
-  const VOLUME_THRESHOLD = 0.015;
 
-  if (rms < VOLUME_THRESHOLD) {
+  if (rms < volumeGate) {
     // Si hay silencio, "limpiamos" el suavizado lentamente para que no queden fantasmas
     for (let i = 0; i < 12; i++) smoothedChroma[i] *= 0.5; 
 
@@ -86,7 +102,7 @@ button.addEventListener("click", async () => {
   const noteNames = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
   const activeNotes: string[] = [];
   smoothedChroma.forEach((val, i) => {
-    if (val > 0.45) activeNotes.push(noteNames[i]);
+    if (val > detectionThreshold) activeNotes.push(noteNames[i]);
   });
 
   // 6. DIBUJO (Usamos smoothedChroma para que las barritas de la UI sean fluidas)
@@ -104,14 +120,11 @@ button.addEventListener("click", async () => {
   const isConfident = result.score > 0.65;
   const displayHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
-      <span style="font-size: 4rem; font-weight: 900; color: ${isConfident ? '#00FF96' : '#191919'}; line-height: 1; text-transform: uppercase;">
+      <span style="font-size: 3.5rem; font-weight: 900; color: ${isConfident ? '#00FF96' : '#191919'}; line-height: 1; text-transform: uppercase; margin-bottom: 5px;">
           ${isConfident ? result.name : "..."}
       </span>
-      <div style="margin-top: 15px; display: flex; flex-direction: column; align-items: center;">
-          <span style="font-size: 1.1rem; font-weight: 700; color: #FF785A; letter-spacing: 1px;">
-              ${activeNotes.join("  •  ") || "Calculating..."}
-          </span>
-          <span style="font-size: 0.85rem; color: #666; font-weight: 500; margin-top: 5px;">
+      <div style="display: flex; flex-direction: column; align-items: center;">
+          <span style="font-size: 0.95rem; color: #666; font-weight: 600; text-transform: uppercase;">
               confidence: ${Math.floor(result.score * 100)}%
           </span>
       </div>

@@ -72,23 +72,51 @@ export class SpectrumVisualizer {
     }
     ctx.stroke();
 
-    // --- 3. SPECTRUM (Llenado Azul/Naranja) ---
+    // --- 3. SPECTRUM (Llenado + Contorno) ---
     ctx.beginPath();
     ctx.moveTo(0, height);
+    
+    // Suavizado en X (opcional, para hacer las colinas menos picudas)
+    const points: {x: number, y: number}[] = [];
+
     for (let i = 0; i < spectrum.length; i++) {
       const freq = (i * sampleRate) / fftSize;
       if (freq < minFreq || freq > maxFreq) continue;
 
       const val = Math.max(0, (spectrum[i] + 100) / 80);
-      this.smoothedHeights[i] = Math.max(val, this.smoothedHeights[i] * 0.85);
+      this.smoothedHeights[i] = Math.max(val, this.smoothedHeights[i] * 0.85); // Inercia
       
       const x = ((Math.log10(freq) - logMin) / (logMax - logMin)) * width;
-      const y = height - (this.smoothedHeights[i] * height * 0.7);
-      ctx.lineTo(x, y);
+      // Invertimos la altura (0 es ruido, multiplicamos por un factor)
+      const peakHeight = Math.pow(this.smoothedHeights[i], 1.5) * height * 0.8; 
+      const y = height - peakHeight;
+      
+      points.push({x, y});
     }
+
+    // Dibujamos la forma
+    for (let i = 0; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+    }
+    
+    // Terminamos de cerrar la forma para el relleno
     ctx.lineTo(width, height);
-    ctx.fillStyle = "rgba(255, 120, 90, 0.6)"; // Naranja mate semitransparente
+    
+    // Primero rellenamos
+    ctx.fillStyle = "rgba(255, 120, 90, 0.4)"; // Tú decides la opacidad del relleno
     ctx.fill();
+
+    // Luego dibujamos el contorno (la línea de arriba)
+    ctx.beginPath();
+    if (points.length > 0) {
+        ctx.moveTo(points[0].x, points[0].y);
+        for (let i = 1; i < points.length; i++) {
+            ctx.lineTo(points[i].x, points[i].y);
+        }
+        ctx.strokeStyle = "#FF785A"; // El mismo color pero sólido para el contorno
+        ctx.lineWidth = 2; // Grosor del contorno
+        ctx.stroke();
+    }
 
     // --- 4. CHROMA BARS (Estilo Pygame/Notebook) ---
     // Dibujamos 12 barras en el fondo para mostrar la energía de cada nota
