@@ -120,10 +120,10 @@ button.addEventListener("click", async () => {
   const isConfident = result.score > 0.65;
   const displayHTML = `
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%;">
-      <span style="font-size: 3.5rem; font-weight: 900; color: ${isConfident ? '#00FF96' : '#191919'}; line-height: 1; text-transform: uppercase; margin-bottom: 5px;">
+      <span style="font-size: 5rem; font-weight: 900; color: ${isConfident ? '#00FF96' : '#191919'}; line-height: 1; text-transform: uppercase;">
           ${isConfident ? result.name : "..."}
       </span>
-      <div style="display: flex; flex-direction: column; align-items: center;">
+      <div style="margin-top: 10px; display: flex; flex-direction: column; align-items: center;">
           <span style="font-size: 0.95rem; color: #666; font-weight: 600; text-transform: uppercase;">
               confidence: ${Math.floor(result.score * 100)}%
           </span>
