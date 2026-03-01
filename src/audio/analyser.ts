@@ -3,8 +3,8 @@ export function createAnalyser(
   source: MediaStreamAudioSourceNode
 ): AnalyserNode {
   const analyser = ctx.createAnalyser();
-  analyser.fftSize = 8192;
-  analyser.smoothingTimeConstant = 0.8;
+  analyser.fftSize = 16384;                 // Alta resolución
+  analyser.smoothingTimeConstant = 0.85;    // Suavizado temporal
 
   source.connect(analyser);
   return analyser;

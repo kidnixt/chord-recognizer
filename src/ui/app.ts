@@ -22,7 +22,9 @@ export function initializeUI() {
   return canvas;
 }
 
-export function updateOutput(text: string) {
-  const el = document.getElementById("output");
-  if (el) el.textContent = text;
+export function updateOutput(content: string) {
+  const outputElement = document.getElementById("output-content");
+  if (outputElement) {
+    outputElement.innerHTML = content; // Usamos innerHTML para las etiquetas div y colores
+  }
 }
