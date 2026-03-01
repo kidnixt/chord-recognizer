@@ -3,7 +3,7 @@ export function createAnalyser(
   source: MediaStreamAudioSourceNode
 ): AnalyserNode {
   const analyser = ctx.createAnalyser();
-  analyser.fftSize = 4096;
+  analyser.fftSize = 8192;
   analyser.smoothingTimeConstant = 0.8;
 
   source.connect(analyser);

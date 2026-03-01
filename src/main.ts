@@ -7,6 +7,13 @@ import { frequencyToNote } from "./music/pitch";
 import { updateOutput } from "./ui/app";
 import { SpectrumVisualizer } from "./ui/spectrum";
 
+import { NoteTracker } from "./music/noteTracker";
+
+const tracker = new NoteTracker(12);
+
+
+
+
 const button = document.getElementById("start")!;
 const canvas = document.getElementById("spectrum") as HTMLCanvasElement;
 
@@ -24,18 +31,18 @@ button.addEventListener("click", async () => {
     const spectrum = getSpectrum(analyser);
 
     // 🎨 dibujamos espectro
-    visualizer.draw(spectrum);
 
-    // 🎵 detección musical
-    const peaks = detectPeaks(
-      spectrum,
-      ctx.sampleRate,
-      analyser.fftSize
-    );
+    const peaks = detectPeaks(spectrum, ctx.sampleRate, analyser.fftSize);
+    const peaksFreqs = peaks.map(p => p.frequency); // array de frecuencias reales
 
-    const notes = peaks.map(p => frequencyToNote(p.frequency));
+    visualizer.draw(spectrum, ctx.sampleRate, analyser.fftSize, peaksFreqs);
 
-    const text = notes
+
+
+    // dentro del loop
+    const rawNotes = peaks.map(p => frequencyToNote(p.frequency));
+    const stableNotes = tracker.update(rawNotes);
+    const text = stableNotes
       .map(n => `${n.name} (${n.frequency.toFixed(1)} Hz)`)
       .join("\n");
 
